@@ -1,4 +1,4 @@
-import XUtil from '@xvue/index';
+import XUtil from '@xvue/xenv';
 import Binding from 'weex-bindingx/lib/index.weex.js';
 
 const XEnv = {
