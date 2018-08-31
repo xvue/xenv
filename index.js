@@ -54,7 +54,7 @@ export default {
      */
   getPageHeight () {
     const { env } = weex.config;
-    const navHeight = XEnv.isWeb() ? 0 : (XEnv.isIPhoneX() ? 176 : 132);
+    const navHeight = XEnv.isWeb() ? 0 : (XEnv.isIPhoneX() ? 60 : 40);
     return env.deviceHeight / env.deviceWidth * 750 - navHeight;
   },
   /**
