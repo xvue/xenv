@@ -57,6 +57,9 @@ export default {
     const navHeight = XEnv.isWeb() ? 0 : (XEnv.isIPhoneX() ? 60 : 40);
     return env.deviceHeight / env.deviceWidth * 750 - navHeight;
   },
+  getNavBarHeight () {
+    return XEnv.isWeb() ? 0 : (XEnv.isIPhoneX() ? 60 : 40)
+  },
   /**
      * 获取weex屏幕真实的设置高度
      * @returns {Number}
