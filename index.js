@@ -23,15 +23,18 @@ export default {
     return platform.toLowerCase() === 'ios';
   },
   /**
-     * 是否为 iPhone X
+     * 是否为 iPhone X or iPhoneXS or iPhoneXR or iPhoneXS Max
      * @returns {boolean}
      */
   isIPhoneX () {
-    const { deviceHeight } = weex.config.env;
+    const { deviceModel } = weex.config.env;
+    const items = ['iPhone10,3', 'iPhone10,6', 'iPhone11,8', 'iPhone11,2', 'iPhone11,6', 'iPhone11,4'];
     if (XEnv.isWeb()) {
-      return typeof window !== undefined && window.screen && window.screen.width && window.screen.height && (parseInt(window.screen.width, 10) === 375) && (parseInt(window.screen.height, 10) === 812);
+      return typeof window !== undefined && window.screen && window.screen.width && window.screen.height &&
+      ((parseInt(window.screen.width, 10) === 375) && (parseInt(window.screen.height, 10) === 812) ||
+      (parseInt(window.screen.width, 10) === 414) && (parseInt(window.screen.height, 10) === 896));
     }
-    return XEnv.isIOS() && deviceHeight === 2436;
+    return XEnv.isIOS() && items.indexOf(deviceModel) !== -1;
   },
   isAndroid () {
     const { platform } = weex.config.env;
@@ -54,11 +57,15 @@ export default {
      */
   getPageHeight () {
     const { env } = weex.config;
-    const navHeight = XEnv.isWeb() ? 0 : (XEnv.isIPhoneX() ? 60 : 40);
-    return env.deviceHeight / env.deviceWidth * 750 - navHeight;
+    const navHeight = XEnv.isWeb() ? 0 : (XEnv.isIPhoneX() ? 88 : 40);
+    const bottomSafetyDistance = XEnv.getBottomSafetyDistance()
+    return env.deviceHeight / env.deviceWidth * 750 - navHeight - bottomSafetyDistance;
   },
   getNavBarHeight () {
-    return XEnv.isWeb() ? 0 : (XEnv.isIPhoneX() ? 60 : 40)
+    return XEnv.isWeb() ? 0 : (XEnv.isIPhoneX() ? 88 : 40)
+  },
+  getBottomSafetyDistance () {
+    return XEnv.isIPhoneX() ? 64 : 0
   },
   /**
      * 获取weex屏幕真实的设置高度
