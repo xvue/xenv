@@ -56,13 +56,33 @@ export default {
      * @returns {Number}
      */
   getPageHeight () {
-    const { env } = weex.config;
-    const navHeight = XEnv.isWeb() ? 0 : (XEnv.isIPhoneX() ? 88 : 40);
-    const bottomSafetyDistance = XEnv.getBottomSafetyDistance()
-    return env.deviceHeight / env.deviceWidth * 750 - navHeight - bottomSafetyDistance;
+    return new Promise((resolve, reject) => {
+      XEnv.getNavBarHeight().then(
+        res => {
+          const { env } = weex.config;
+          const navHeight = res;
+          const bottomSafetyDistance = XEnv.getBottomSafetyDistance();
+          resolve(env.deviceHeight / env.deviceWidth * 750 - navHeight - bottomSafetyDistance)
+        }, rej => {
+          reject(rej)
+        }
+      )
+    })
   },
+  /** 获取顶部状态栏高度 */
   getNavBarHeight () {
-    return XEnv.isWeb() ? 0 : (XEnv.isIPhoneX() ? 88 : 40)
+    return new Promise((resolve, reject) => {
+      if (XEnv.isAndroid()) {
+        const statusBarModule = weex.requireModule('statusBarModule');
+        statusBarModule.getStatusBarHeight(e => {
+          return e / weex.config.env.deviceWidth * 750;
+        });
+      } else if (XEnv.isIOS()) {
+        return XEnv.isIPhoneX() ? 88 : 40;
+      } else {
+        return 0;
+      }
+    });
   },
   getBottomSafetyDistance () {
     return XEnv.isIPhoneX() ? 64 : 0
