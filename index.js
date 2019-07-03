@@ -84,6 +84,7 @@ export default {
       }
     });
   },
+  /** 获取底部安全距离 */
   getBottomSafetyDistance () {
     return XEnv.isIPhoneX() ? 64 : 0
   },
