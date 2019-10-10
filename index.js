@@ -22,6 +22,28 @@ export default {
     const { platform } = weex.config.env;
     return platform.toLowerCase() === 'ios';
   },
+  isWebview () {
+    if (XEnv.isWeb()) {
+      var ua = navigator.userAgent.toLowerCase()
+      if (ua.match(/MicroMessenger/i) == 'micromessenger') { // 微信浏览器判断
+        return false
+      } else if (ua.match(/QQ/i) == 'qq') { // QQ浏览器判断
+        return false
+      } else if (ua.match(/WeiBo/i) == 'weibo') {
+        return false
+      } else {
+        if (ua.match(/Android/i) != null) {
+          return ua.match(/browser/i) == null
+        } else if (ua.match(/iPhone/i) != null) {
+          return ua.match(/safari/i) == null
+        } else {
+          return (ua.match(/macintosh/i) == null && ua.match(/windows/i) == null)
+        }
+      }
+    } else {
+      return false
+    }
+  },
   /**
      * 是否为 iPhone X or iPhoneXS or iPhoneXR or iPhoneXS Max
      * @returns {boolean}
@@ -52,21 +74,15 @@ export default {
     return XEnv.isTmall() || XEnv.isTrip() || XEnv.isTaobao();
   },
   /**
-     * 获取weex屏幕真实的设置高度，需要减去导航栏高度
+     * 获取weex屏幕真实的设置高度
      * @returns {Number}
      */
   getPageHeight () {
+    const dom = weex.requireModule('dom');
     return new Promise((resolve, reject) => {
-      XEnv.getNavBarHeight().then(
-        res => {
-          const { env } = weex.config;
-          const navHeight = res;
-          const bottomSafetyDistance = XEnv.getBottomSafetyDistance();
-          resolve(env.deviceHeight / env.deviceWidth * 750 - navHeight - bottomSafetyDistance)
-        }, rej => {
-          reject(rej)
-        }
-      )
+      dom.getComponentRect('viewport', (option) => {
+        resolve(option.size.height)
+      });
     })
   },
   /** 获取顶部状态栏高度 */
@@ -75,12 +91,12 @@ export default {
       if (XEnv.isAndroid()) {
         const statusBarModule = weex.requireModule('statusBarModule');
         statusBarModule.getStatusBarHeight(e => {
-          return e / weex.config.env.deviceWidth * 750;
+          resolve(e / weex.config.env.deviceWidth * 750);
         });
       } else if (XEnv.isIOS()) {
-        return XEnv.isIPhoneX() ? 88 : 40;
+        resolve(XEnv.isIPhoneX() ? 88 : 40);
       } else {
-        return 0;
+        resolve(0);
       }
     });
   },
@@ -89,7 +105,7 @@ export default {
     return XEnv.isIPhoneX() ? 64 : 0
   },
   /**
-     * 获取weex屏幕真实的设置高度
+     * 获取weex屏幕高度
      * @returns {Number}
      */
   getScreenHeight () {
