@@ -22,6 +22,9 @@ export default {
     const { platform } = weex.config.env;
     return platform.toLowerCase() === 'ios';
   },
+  /** 判断是否在webview环境下
+   * @returns {boolean}
+   */
   isWebview () {
     if (XEnv.isWeb()) {
       var ua = navigator.userAgent.toLowerCase()
