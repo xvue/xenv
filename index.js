@@ -80,12 +80,17 @@ export default {
      * 获取weex屏幕真实的设置高度
      * @returns {Number}
      */
-  getPageHeight () {
-    const dom = weex.requireModule('dom');
+  getPageHeight (customViewport = 750) {
     return new Promise((resolve, reject) => {
-      dom.getComponentRect('viewport', (option) => {
-        resolve(option.size.height)
-      });
+      if (!XEnv.isWeb()) {
+        const DeviceInformation = weex.requireModule('deviceInformation');
+        DeviceInformation.getDeviceSize(e => {
+          resolve(e.containerHeight / e.containerWidth * customViewport)
+        })
+      } else {
+        const { env } = weex.config;
+        resolve(env.deviceHeight * customViewport / env.deviceWidth);
+      }
     })
   },
   /** 获取顶部状态栏高度 */
@@ -111,9 +116,9 @@ export default {
      * 获取weex屏幕高度
      * @returns {Number}
      */
-  getScreenHeight () {
+  getScreenHeight (customViewport = 750) {
     const { env } = weex.config;
-    return env.deviceHeight / env.deviceWidth * 750;
+    return env.deviceHeight * customViewport / env.deviceWidth;
   },
 
   /**
