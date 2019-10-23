@@ -82,15 +82,16 @@ export default {
      */
   getPageHeight (customViewport = 750) {
     return new Promise((resolve, reject) => {
-      if (!XEnv.isWeb()) {
-        const DeviceInformation = weex.requireModule('deviceInformation');
-        DeviceInformation.getDeviceSize(e => {
-          resolve(e.containerHeight / e.containerWidth * customViewport)
-        })
-      } else {
-        const { env } = weex.config;
-        resolve(env.deviceHeight * customViewport / env.deviceWidth);
-      }
+      const dom = weex.requireModule('dom');
+      dom.getComponentRect('viewport', (option) => {
+        if (option.result && option.size.height) {
+          resolve(option.size.height);
+        } else {
+          const { env } = weex.config;
+          const defaultViewHeight = env.deviceHeight * customViewport / env.deviceWidth;
+          resolve(defaultViewHeight);
+        }
+      });
     })
   },
   /** 获取顶部状态栏高度 */
