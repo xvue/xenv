@@ -52,14 +52,17 @@ export default {
      * @returns {boolean}
      */
   isIPhoneX () {
-    const { deviceModel } = weex.config.env;
-    const items = ['iPhone10,3', 'iPhone10,6', 'iPhone11,8', 'iPhone11,2', 'iPhone11,6', 'iPhone11,4'];
+    // const { deviceModel } = weex.config.env;
+    const { deviceHeight } = weex.config.env;
+    // const items = ['iPhone10,3', 'iPhone10,6', 'iPhone11,8', 'iPhone11,2', 'iPhone11,6', 'iPhone11,4'];
     if (XEnv.isWeb()) {
       return typeof window !== undefined && window.screen && window.screen.width && window.screen.height &&
       ((parseInt(window.screen.width, 10) === 375) && (parseInt(window.screen.height, 10) === 812) ||
       (parseInt(window.screen.width, 10) === 414) && (parseInt(window.screen.height, 10) === 896));
     }
-    return XEnv.isIOS() && items.indexOf(deviceModel) !== -1;
+    return XEnv.isIOS() &&
+    (deviceHeight === 2436 || deviceHeight === 2688 || deviceHeight === 1792 || deviceHeight === 1624)//
+    // return  XEnv.isIOS() && items.indexOf(deviceModel) !== -1;
   },
   isAndroid () {
     const { platform } = weex.config.env;
