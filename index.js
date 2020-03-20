@@ -84,16 +84,23 @@ export default function (weex) {
      */
         getPageHeight (customViewport = 750) {
             return new Promise((resolve, reject) => {
-                const dom = weex.requireModule('dom');
-                dom.getComponentRect('viewport', (option) => {
-                    if (option.result && option.size.height) {
-                        resolve(option.size.height);
-                    } else {
-                        const { env } = weex.config;
-                        const defaultViewHeight = env.deviceHeight * customViewport / env.deviceWidth;
-                        resolve(defaultViewHeight);
-                    }
-                });
+                if (weex.config.env.platform.toLocaleLowerCase() === 'ios') {
+                    const { env } = weex.config;
+                    const defaultViewHeight = env.deviceHeight * customViewport / env.deviceWidth;
+                    resolve(defaultViewHeight);
+                } else {
+                    console.log('dom');
+                    const dom = weex.requireModule('dom');
+                    dom.getComponentRect('viewport', (option) => {
+                        if (option.result && option.size.height) {
+                            resolve(option.size.height);
+                        } else {
+                            const { env } = weex.config;
+                            const defaultViewHeight = env.deviceHeight * customViewport / env.deviceWidth;
+                            resolve(defaultViewHeight);
+                        }
+                    });
+                }
             });
         },
         /** 获取顶部状态栏高度 */
