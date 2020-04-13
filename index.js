@@ -89,7 +89,6 @@ export default function (weex) {
                     const defaultViewHeight = env.deviceHeight * customViewport / env.deviceWidth;
                     resolve(defaultViewHeight);
                 } else {
-                    console.log('dom');
                     const dom = weex.requireModule('dom');
                     dom.getComponentRect('viewport', (option) => {
                         if (option.result && option.size.height) {
